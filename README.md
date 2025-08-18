@@ -1,56 +1,87 @@
-## Getting Started
+README
+### Pre-requisites and software installations needed to deploy app/cluster
 
-We provide a sample app using Node.js that you can deploy on App Platform. These steps will get this sample application running for you using App Platform.
+Digital ocean cmd line and authentication
+doctl install:
+[How to Install and Configure doctl | DigitalOcean Documentation](https://docs.digitalocean.com/reference/doctl/how-to/install/)
 
-**Note: Following these steps may result in charges for the use of DigitalOcean services.**
+### git install required to create repository
+[Git - Downloading Package](https://git-scm.com/downloads/win)
 
-### Requirements
+### docker desktop install required to containerize application
+[Windows Docker Docs](https://docs.docker.com/desktop/setup/install/windows-install/)
 
-* You need a DigitalOcean account. If you don't already have one, you can sign up at https://cloud.digitalocean.com/registrations/new.
+### install k8s tools to work with the Digital Ocean cluster
+https://kubernetes.io/docs/tasks/tools/
 
-## Deploying the App
 
-Click this button to deploy the app to the DigitalOcean App Platform. If you are not logged in, you will be prompted to log in with your DigitalOcean account.
+fork repo of sample application
+https://www.digitalocean.com/community/tutorials/automating-birthday-reminders-with-triggers
+digitalocean/sample-nodejs: ⛵ App Platform sample Node.js application.
 
-[![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/digitalocean/sample-nodejs/tree/main)
+Run the following docker commands from a terminal to containerize the application:
+docker init
+node.js version 24.5
+yarn
+yarn start
+port 3000
 
-Using this button disables the ability to automatically re-deploy your app when pushing to a branch or tag in your repository as you are using this repo directly.
+docker compose up --build
+push image to hub
 
-If you want to automatically re-deploy your app, [fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) the GitHub repository to your account so that you have a copy of it stored to the cloud. Click the **Fork** button in the GitHub repository and follow the on-screen instructions.
+## Digital Ocean console / control panel
+## App Platform
+authorize GitHub 
+select repo for deployment
 
-After forking the repo, you should now be viewing this README in your own GitHub org (e.g. `https://github.com/<your-org>/sample-nodejs`). To deploy the new repo, visit https://cloud.digitalocean.com/apps and click **Create App**. Then, click **GitHub**, select the repository you created and select the `main` branch. App Platform will inspect the code, automatically detect the kind of component to create, and use the correct buildpack to create and deploy a container.
+Dedicated instance sizes starting at $29.00/mo can enable autoscaling.
+Cost saving measure
 
-After clicking the **Deploy to DigitalOcean** button or completing the instructions above to fork the repo, follow these steps:
+create container registry in Digital Ocean
 
-1. Configure the app such as specifying HTTP routes, environment variables or adding a database.
-1. Provide a name for your app and select which region you want to deploy your app to and click **Next**. The closest region to you should be selected by default. All App Platform apps are routed through a global CDN. So this will not affect your app performance, unless it needs to talk to external services.
-1. On the following screen, leave all the fields as they are and click **Next**.
-1. Confirm your **Plan** settings and how many containers you want to launch and click **Launch Basic/Pro App**.
-1. You should see a "Building..." progress indicator. You can click **View Logs** to see more details of the build.
-1. It can take a few minutes for the build to finish, but you can follow the progress in the **Deployments** tab.
-1. Once the build completes successfully, click the **Live App** link in the header and you should see your running application in a new tab, displaying the home page.
+dependency free registration
+https://docs.digitalocean.com/products/container-registry/how-to/use-registry-docker-kubernetes/#option-2-use-credentials-obtained-from-the-control-panel
 
-### Making Changes to Your App
+doctl auth init
 
-If you followed the steps to fork the repo and used your own copy when deploying the app, you can push changes to your fork and see App Platform automatically re-deploy the update to your app. During these automatic deployments, your application will never pause or stop serving request because App Platform offers zero-downtime deployments.
+doctl registry login -- enable container images to be used by App
 
-Here's an example code change you can make for this app:
+## create k8s cluster, allow auto-scale
 
-1. Edit code within the repository
-1. Commit the change to the `main` branch. Normally it's a better practice to create a new branch for your change and then merge that branch to `main` after review, but for this demo you can commit to the `main` branch directly.
-1. Visit https://cloud.digitalocean.com/apps and navigate to your sample app.
-1. You should see a "Building..." progress indicator, just like when you first created the app.
-1. Once the build completes successfully, click the **Live App** link in the header and you should see your updated application running. You may need to force refresh the page in your browser (e.g. using **Shift+Reload**).
+back to cluster
 
-### Learn More
+doctl kubernetes cluster kubeconfig save 8d739f57-ebec-4d79-8a1e-dc9a408c0da8
 
-You can learn more about the App Platform and how to manage and update your application at https://www.digitalocean.com/docs/app-platform/.
+Notice: Adding cluster credentials to kubeconfig file found in "C:\\Users\\ghart\\.kube\\config"
+Notice: Setting current-context to do-sfo3-k8s-sample-interview-demo
 
-## Deleting the App
+kubectl config get-contexts
+Lists your cluster name, user, and namespace
+kubectl cluster-info
+Display addresses of the control plane and cluster services
+kubectl version
+Display the client and server k8s version
+kubectl get nodes
+List all nodes created in the cluster
+kubectl help
 
-When you no longer need this sample application running live, you can delete it by following these steps:
-1. Visit the Apps control panel at https://cloud.digitalocean.com/apps.
-2. Navigate to the sample app.
-3. In the **Settings** tab, click **Destroy**.
 
-**Note: If you do not delete your app, charges for using DigitalOcean services will continue to accrue.**
+
+
+
+
+Add load balancer
+How to Add Load Balancers to Kubernetes Clusters | DigitalOcean Documentation
+
+
+
+https://docs.digitalocean.com/products/kubernetes/how-to/connect-to-cluster/#download
+
+PS C:\Users\ghart\.kube> kubectl --kubeconfig=k8s-sample-interview-demo-kubeconfig.yaml get nodes
+NAME                               STATUS   ROLES    AGE   VERSION
+sample-interview-demo-pool-27f33   Ready    <none>   15h   v1.33.1
+sample-interview-demo-pool-27f38   Ready    <none>   15h   v1.33.1
+sample-interview-demo-pool-27f3n   Ready    <none>   15h   v1.33.1
+PS C:\Users\ghart\.kube>
+
+
